@@ -36,11 +36,8 @@ export default function LoginForm() {
                     }
                 })
                 if (result.status === 200) {
-                    console.log('Signed up')
                     router.push('/login');
                 }
-
-                console.log(value)
             } catch (error) {
                 console.error(error as Error)
                 toast({

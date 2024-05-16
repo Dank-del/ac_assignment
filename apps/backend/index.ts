@@ -134,13 +134,20 @@ const router = s.router(contract, {
                 where: {
                     authorId: author,
                 },
+                orderBy: {
+                    createdAt: 'desc'
+                }
             });
             return {
                 status: 200,
                 body: result,
             };
         }
-        const result = await prisma.post.findMany();
+        const result = await prisma.post.findMany({
+            orderBy: {
+                createdAt: 'desc'
+            }
+        });
         return {
             status: 200,
             body: result,
@@ -189,7 +196,7 @@ createExpressEndpoints(contract, router, app);
 app.use('/', swaggerUi.serve, swaggerUi.setup(openApiDocument));
 
 app.listen(process.env.API_PORT, () => {
-    console.log({
+    console.debug({
         NODE_ENV: process.env.NODE_ENV,
         JWT_SECRET: process.env.JWT_SECRET,
         COOKIE_SECRET: process.env.COOKIE_SECRET,

@@ -2,9 +2,9 @@
 import PostCard from "@/components/post-card";
 import { Button } from "@/components/ui/button";
 import { client } from "@/lib/queryclient";
-import { getCookie } from "cookies-next";
+import { getCookie, deleteCookie } from "cookies-next";
 import { useRouter } from "next/navigation";
-import { CirclePlus } from 'lucide-react';
+import { CirclePlus, LogOut } from 'lucide-react';
 import { Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -22,7 +22,7 @@ export default function Dashboard() {
       authorization: `Bearer ${cookie}`,
     },
   });
-  const { data, refetch: refreshPosts } = client.posts.useQuery(['posts'], {
+  const { data } = client.posts.useQuery(['posts'], {
     query: {
       author: user?.body?.id,
     }
@@ -48,8 +48,7 @@ export default function Dashboard() {
           }
         })
         if (result.status === 200) {
-          console.log('Post created')
-          refreshPosts();
+          window.location.reload();
         }
       } catch (error) {
         console.error(error as Error)
@@ -70,8 +69,7 @@ export default function Dashboard() {
           <Sheet>
             <SheetTrigger>
               <Button>
-                <CirclePlus className="mr-2" />
-                New Post
+                <CirclePlus />
               </Button>
             </SheetTrigger>
             <SheetContent side="top">
@@ -187,9 +185,18 @@ export default function Dashboard() {
               </div>
             </SheetContent>
           </Sheet>
+          <Button onClick={() => {
+            const sure = confirm("Are you sure you want to log out?")
+            if (sure) {
+              deleteCookie('token');
+              window.location.href = "/"
+            }
+          }}>
+            <LogOut />
+          </Button>
         </div>
       }
-      <div className="m-4">
+      <div className="m-4 flex flex-wrap gap-2">
         {data?.body?.map((post) => (
           <PostCard id={post.id} createdAt={post.createdAt} title={post.title} authorId={post.authorId} content={post.content} key={post.id} />
         ))}

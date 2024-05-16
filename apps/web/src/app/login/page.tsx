@@ -29,16 +29,13 @@ export default function LoginForm() {
                     }
                 })
                 if (result.status === 200) {
-                    console.log('Logged in')
                     setCookie('token', result.body.token, {
                         // httpOnly: true,
                         secure: process.env.NODE_ENV === 'production',
                         sameSite: 'strict',
                     })
-                    router.push('/');
+                    window.location.href = '/dashboard';
                 }
-
-                console.log(value)
             } catch (error) {
                 console.error(error as Error)
                 toast({
